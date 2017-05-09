@@ -1,0 +1,40 @@
+int oneSort(int a[],int left,int right)
+{
+	//i,j为两个指针，一个从左向右移动，一个从右向左移动
+	int i=left;
+	int j=right;
+	int key=a[left];   //把第一个数当轴值
+	while(i<j)//每次循环处理左右两个子区间，并完成左右区间第一个不满足值的位置交换
+	{
+		while(key<a[j]&&i<j) //如果右边的值比轴值大，指针向左移动
+			j--;
+		if(i<j)
+		{    
+			a[i]=a[j];//右边第一个比key小的值放在左边指针停留的位置
+			i++;//左边指针向右移动一位，下次指针移动从下一个位置开始
+		}
+		while(a[i]<key&&i<j) //如果左边的值比轴值小，指针向右移动
+			i++;
+		if(i<j)
+		{
+			a[j]=a[i];//左边第一个比key大的值放在右边指针停留的位置
+			j--;//右边指针向左移动一位，下次指针移动从下一个位置开始
+		}
+	}
+	//至此，[left,i]左边区间值都比key小，[j,right]右边区间值都比key大，完成时i==j
+	a[i]=key; //设置key的位置，i指针停留的位置就是key的位置，实际上就是交换key，i，j的值
+	//key=a[j];右边第一个比key小的值放在key位置
+	//a[j]=a[i];左边第一个比key大的值放在右边第一个比key小的位置
+	//a[i]=key;key放在左边第一个比key大的位置
+
+	return i; //返回key的位置
+}
+void qSort(int a[],int left,int right)
+{
+	if(left<right)
+	{
+		int key_pos=oneSort(a,left,right); //完成一次划分，并返回key的坐标
+		qSort(a,left,key_pos-1);//继续划分左边
+		qSort(a,key_pos+1,right);//继续划分右边
+	}
+}
