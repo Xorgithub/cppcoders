@@ -1,0 +1,231 @@
+
+#include<iostream>    
+#include<string>  
+#include<malloc.h>    
+using namespace std;    
+
+struct Node    
+{   
+	int data;
+	struct Node* next;    
+};    
+
+struct Node* build_list(int n)   
+{    
+	Node *head =(struct Node*)malloc(sizeof(Node));
+	if (head == NULL)
+	{
+		cout<<"malloc failed!"<<endl;  
+		return head;
+	} 
+	head->data = 1;
+	head->next = NULL;
+
+	Node *curNode = head;
+	for (int i=1;i<n;i++)
+	{
+		Node *newNode = (struct Node*)malloc(sizeof(Node));
+		if (newNode == NULL)
+		{
+			cout<<"malloc failed!"<<endl;  
+			return head;
+		}
+		newNode->data = i+1;
+		newNode->next = NULL;
+
+		curNode->next = newNode;
+		curNode = newNode;
+	}     
+	return head;    
+}
+struct Node* addtail_node_list(struct Node* head, struct Node* newNode)
+{
+	if (head == NULL || newNode == NULL)
+	{
+		return head;
+	}
+	struct Node* pcurrNode=head; 
+	while(pcurrNode->next != NULL)    
+	{
+		pcurrNode = pcurrNode->next;    
+	}
+	if (pcurrNode != NULL)
+	{
+		pcurrNode->next = newNode;
+		newNode->next = NULL;
+	}
+	return head;
+}
+
+struct Node* addprev_node_list(struct Node* head, struct Node* newNode,int key)
+{
+	if (head == NULL || newNode == NULL)
+	{
+		return head;
+	}
+	struct Node* pcurrNode = head;
+	struct Node* pprevNode = NULL;
+	while(pcurrNode != NULL)    
+	{
+		if (pcurrNode->data == key)
+		{
+			if (pcurrNode == head)
+			{
+				newNode->next = head;
+				head = newNode;
+			}
+			else
+			{
+				pprevNode->next = newNode;
+				newNode->next = pcurrNode;
+			}
+			break;
+		}
+		pprevNode = pcurrNode;
+		pcurrNode = pcurrNode->next;    
+	}
+	return head;
+}
+
+struct Node* modkey_node_list(struct Node* head, int key, int modval)
+{
+	if(head==NULL)  
+	{
+		return head;  
+	}
+
+	struct Node* pCurrNode=head;  
+	while(pCurrNode!=NULL)  
+	{  
+		if (pCurrNode->data == key)
+		{
+			pCurrNode->data = modval;
+			break;
+		}
+		pCurrNode=pCurrNode->next;  
+
+	} 
+
+	return head;
+}
+
+struct Node* query_node_list(struct Node* head, int key)
+{
+	if(head==NULL)  
+	{
+		return head;  
+	}
+
+	struct Node* pCurrNode=head;   
+	while(pCurrNode!=NULL)  
+	{  
+		if (pCurrNode->data == key)
+		{
+			return pCurrNode;
+		}
+		pCurrNode=pCurrNode->next;  
+
+	} 
+
+	return NULL;
+}
+struct Node* delete_node_list(struct Node* head, int key)   
+{  
+	if(head==NULL)  
+	{  
+		cout<<"list is null"<<endl;  
+		return head;  
+	}
+
+	struct Node* pCurrNode = head;   
+	struct Node* pPrevNode = NULL;
+	bool bfind = false;
+	while(pCurrNode!=NULL)  
+	{  
+		if (pCurrNode->data == key)
+		{
+			if(head==pCurrNode)  
+			{  
+				head=pCurrNode->next; 
+			}
+			pPrevNode->next = pCurrNode->next;
+			pCurrNode->next = NULL;
+			free(pCurrNode);
+
+			bfind = true;
+			break;
+		} 
+		pPrevNode = pCurrNode;
+		pCurrNode=pCurrNode->next;  
+
+	} 
+	if (!bfind)
+	{
+		cout<<key<<" not find"<<endl;
+	}
+	return head;  
+}  
+
+void print_list(struct Node* head)   
+{    
+	struct Node* pcurrNode=head;  
+	while(pcurrNode!=NULL)    
+	{    
+		cout<<pcurrNode->data<<" "; 
+
+		pcurrNode = pcurrNode->next;    
+	}  
+	cout<<endl;       
+}    
+
+int main(void)  
+{
+	Node *head=build_list(10);
+	if (head == NULL)
+	{
+		getchar();
+		return -1;
+	}
+	cout<<"pint build list"<<endl;
+	print_list(head); 
+
+	Node *newNode = (struct Node*)malloc(sizeof(Node));
+	int newvalue = 57;
+	if (newNode == NULL)
+	{
+		cout<<"malloc failed!"<<endl;  
+		return -1;
+	}
+	newNode->data = newvalue;
+	newNode->next = NULL;
+	cout<<"construct a new node:"<<newNode<<endl;
+	addtail_node_list(head,newNode);
+
+	Node *tmp = query_node_list(head,newvalue);
+	cout<<"query the node:"<<tmp<<" key:"<<newvalue<<endl;
+
+	modkey_node_list(head,newvalue,27);
+	cout<<"mod the key "<<newvalue<<" as key "<<27<<endl;
+	int key = 7;
+	cout<<"after delete key equal 7"<<endl;
+	head=delete_node_list(head,key);   
+
+	print_list(head); 
+
+	Node *newNode1 = (struct Node*)malloc(sizeof(Node));
+	if (newNode1 == NULL)
+	{
+		cout<<"malloc failed!"<<endl;  
+		return -1;
+	}
+	newNode1->data = 7;
+	newNode1->next = NULL;
+	head = addprev_node_list(head,newNode1,8);
+	cout<<"after add key of 8"<<endl;
+	print_list(head);
+
+	getchar();
+
+	return 0;    
+}  
+
